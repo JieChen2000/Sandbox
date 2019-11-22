@@ -1,5 +1,4 @@
 #%%
-# roc curve and auc
 from sklearn.datasets import make_regression
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
@@ -11,7 +10,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 # generate 2 class dataset
-X, y = make_regression(n_samples=500, n_features=10, noise=0.5, random_state=1)
+X, y = make_regression(n_samples=500, n_features=3, noise=0.5, random_state=1)
 #%%
 
 # convert numpy array to data frame.
@@ -43,29 +42,34 @@ type(feature_vectors)
 # trainX, testX, trainy, testy = train_test_split(X, y, test_size=0.5, random_state=2)
 trainX, testX, trainy, testy = train_test_split(feature_vectors, y, test_size=0.5, random_state=2)
 
-# generate a no skill prediction (majority class)
-ns_probs = [0 for _ in range(len(testy))]
 # fit simple linear models
-model = LinearRegression()
-model.fit(trainX, trainy)
+# model = LinearRegression()
+# model.fit(trainX, trainy)
+# obtain the coefficient of determination (𝑅²) 
+# r_sq = model.score(trainX, trainy)
+# print('Training coefficient of determination:', r_sq)
+# print('intercept:', model.intercept_)
+# print('slope:', model.coef_)
+# r_sq = model.score(testX, testy)
+# print('Test coefficient of determination:', r_sq)
+# trainy_pred = model.predict(trainX)
+# yhat = model.predict(testX)
 
+# fit statistical models
+trainX = sm.add_constant(trainX)
+testX = sm.add_constant(testX)
+model = sm.OLS(trainy, trainX)
+results = model.fit()
+print(results.summary())
+trainy_pred = results.predict(trainX)
+yhat = results.predict(testX)
 
 #%%
-# obtain the coefficient of determination (𝑅²) 
-r_sq = model.score(trainX, trainy)
-print('Training coefficient of determination:', r_sq)
-r_sq = model.score(testX, testy)
-print('Test coefficient of determination:', r_sq)
-trainy_pred = model.predict(trainX)
+
+
+
 r_sq = r2_score(trainy, trainy_pred)
 print('Training r2_score:', r_sq)
-print('intercept:', model.intercept_)
-print('slope:', model.coef_)
-
-# predict regression values
-yhat = model.predict(testX)
-
-# calculate scores
 r_sq = r2_score(testy, yhat)
 print('Test r2_score:', r_sq)
 print("Mean squared error: %.2f"
@@ -78,3 +82,9 @@ plt.xticks(())
 plt.yticks(())
 plt.show()
 
+
+
+# %%
+
+
+# %%
