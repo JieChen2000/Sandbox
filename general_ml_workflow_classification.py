@@ -1,11 +1,11 @@
 #%%
 # roc curve and auc
-from sklearn.datasets import make_classification
+from sklearn.datasets import make_classification, make_regression
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_curve, precision_recall_curve
 from sklearn.metrics import roc_auc_score, f1_score, auc
-from matplotlib import pyplot 
+from matplotlib import pyplot as plt
 import seaborn as sns
 import numpy as np 
 import pandas as pd
@@ -25,14 +25,14 @@ dataset['target'] = y
 #%%
 # plot pairplot
 sns.pairplot(dataset)
-
+plt.show()
 #%%
 # check correlations
 corr = dataset.corr()
 sns.heatmap(corr, 
             xticklabels=corr.columns.values,
             yticklabels=corr.columns.values)
-pyplot.show()
+plt.show()
 
 #%%%
 # convert df to array 
@@ -70,26 +70,26 @@ print('Logistic: f1=%.3f precision-recall AUC=%.3f' % (lr_f1, lr_auc))
 ns_fpr, ns_tpr, _ = roc_curve(testy, ns_probs)
 lr_fpr, lr_tpr, _ = roc_curve(testy, lr_probs)
 # plot the roc curve for the model
-pyplot.plot(ns_fpr, ns_tpr, linestyle='--', label='No Skill')
-pyplot.plot(lr_fpr, lr_tpr, marker='.', label='Logistic')
+plt.plot(ns_fpr, ns_tpr, linestyle='--', label='No Skill')
+plt.plot(lr_fpr, lr_tpr, marker='.', label='Logistic')
 # axis labels
-pyplot.xlabel('False Positive Rate')
-pyplot.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
 # show the legend
-pyplot.legend()
+plt.legend()
 # show the plot
-pyplot.show()
+plt.show()
 # plot the precision-recall curves
 no_skill = len(testy[testy==1]) / len(testy)
-pyplot.plot([0, 1], [no_skill, no_skill], linestyle='--', label='No Skill')
-pyplot.plot(lr_recall, lr_precision, marker='.', label='Logistic')
+plt.plot([0, 1], [no_skill, no_skill], linestyle='--', label='No Skill')
+plt.plot(lr_recall, lr_precision, marker='.', label='Logistic')
 # axis labels
-pyplot.xlabel('Recall')
-pyplot.ylabel('Precision')
+plt.xlabel('Recall')
+plt.ylabel('Precision')
 # show the legend
-pyplot.legend()
+plt.legend()
 # show the plot
-pyplot.show()
+plt.show()
 
 
 
