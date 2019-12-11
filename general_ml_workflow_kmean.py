@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import pandas as pd 
-from sklearn.metrics import accuracy_score
-from sklearn.datasets.samples_generator import make_blobs
+# from sklearn.metrics import accuracy_score
+# from sklearn.datasets.samples_generator import make_blobs
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import os 
@@ -16,6 +16,8 @@ file_name = '5m_unsupervised_set_fix.csv'
 df = pd.read_csv(os.path.join(file_path, file_name), encoding = "ISO-8859-1")
 df = df.dropna()
 df = df.drop(columns=['timestamp'])
+df = df[(df != 0).all(1)]
+
 # df['RPM'] = df['RPM'].astype(float)
 # df['PUMP_OUTBOARD'] = df['PUMP_OUTBOARD'].astype(float)
 features = list(df) 
@@ -25,17 +27,17 @@ df.head(2)
 # df.isnull()
 # plot pairplot
 sns.pairplot(df)
-# plt.show()
-plt.savefig('data/pair-plot.png')
-plt.close()
+plt.show()
+# plt.savefig('data/pair-plot.png')
+# plt.close()
 # check correlations
 corr = df.corr()
 sns.heatmap(corr, 
             xticklabels=corr.columns.values,
             yticklabels=corr.columns.values)
-# plt.show()
-plt.savefig('data/corr-plot.png')
-plt.close()
+plt.show()
+# plt.savefig('data/corr-plot.png')
+# plt.close()
 
 #%%
 # for 1d fit 
@@ -54,7 +56,6 @@ kmeans = KMeans(n_clusters=2, random_state=0)
 kmeans.fit(df)
 centers = kmeans.cluster_centers_
 print("centers w/o scale", centers)
-
 #%%
 # centers = scaler.transform(centers)
 
@@ -72,13 +73,13 @@ for cl in range(kmeans.n_clusters):
     data_tmp = df.loc[df['class_pred'] == cl] 
     # print(data_tmp.head(3))
     for feature_name in features:
-        print('cluster:', cl, 'centers at', centers[cl,:], 'with ', feature_name, ' and std ', np.std(data_tmp[feature_name]))        
+        print('cluster:', cl, 'centers at', centers[cl,:], 'for ', feature_name, ' with std deviation: ', np.std(data_tmp[feature_name]), ' and 95 percentile at ', np.percentile(data_tmp, 95))        
 
 # %%
 plt.scatter(df.iloc[:, 0], df.iloc[:, 1], c=df['class_pred'], s=50, cmap='viridis')
 plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
 plt.title(features[1] +' vs. '+ features[0])
-# plt.show()
-plt.savefig('data/cluster-plot.png')
-plt.close()
+plt.show()
+# plt.savefig('data/cluster-plot.png')
+# plt.close()
 # %%
